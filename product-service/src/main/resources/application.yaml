@@ -11,6 +11,15 @@ spring:
     hibernate:
       ddl-auto: update
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+      password: ${REDIS_PASSWORD:}
+
+  cache:
+    type: redis
+
 server:
   port: ${PORT:8082}
 
@@ -24,3 +33,11 @@ jwt:
 
 app:
   api-key: ${API_KEY:final-project-api-key-2026}
+  dummy-json:
+    url: ${DUMMY_JSON_URL:https://dummyjson.com/products}
+  scheduler:
+    dummy-json:
+      enabled: ${SCHEDULER_ENABLED:true}
+      cron: ${SCHEDULER_CRON:0 */5 * * * *} # Default: setiap 5 menit (contoh testing cepat: "*/10 * * * * *" untuk tiap 10 detik)
+      limit: ${SCHEDULER_LIMIT:5}           # Default: 5 data per batch (dapat disesuaikan)
+      url: ${DUMMY_JSON_URL:https://dummyjson.com/products}

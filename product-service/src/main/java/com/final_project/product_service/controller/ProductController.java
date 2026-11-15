@@ -3,6 +3,7 @@ package com.final_project.product_service.controller;
 import com.final_project.product_service.dto.request.ProductRequest;
 import com.final_project.product_service.dto.response.BaseResponse;
 import com.final_project.product_service.entity.Product;
+import com.final_project.product_service.scheduler.ProductSyncScheduler;
 import com.final_project.product_service.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +27,27 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductSyncScheduler productSyncScheduler;
+
+    @PostMapping("/sync")
+    public ResponseEntity<BaseResponse<String>> manualSync() {
+        int savedCount = productSyncScheduler.syncProductsFromDummyJson();
+        return ResponseEntity.ok(new BaseResponse<>(200, "Sinkronisasi berhasil dijalankan",
+                "Total produk baru yang disimpan: " + savedCount));
+    }
 
     @PostMapping
     public ResponseEntity<BaseResponse<Product>> createProduct(@Valid @RequestBody ProductRequest request) {
         Product product = productService.createProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new BaseResponse<>(201, "Product berhasil dibuat", product));
+    }
+
+    @PostMapping("/random")
+    public ResponseEntity<BaseResponse<Product>> createRandomProduct() {
+        Product product = productService.createRandomProduct();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new BaseResponse<>(201, "Product random berhasil dibuat dari DummyJSON", product));
     }
 
     @GetMapping("/{id}")

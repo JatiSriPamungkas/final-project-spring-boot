@@ -9,6 +9,8 @@ public interface ProductService {
 
     Product createProduct(ProductRequest request);
 
+    Product createRandomProduct();
+
     Product getProductById(Long id);
 
     List<Product> getProducts(String huruf);
